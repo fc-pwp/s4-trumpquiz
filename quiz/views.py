@@ -10,3 +10,9 @@ def helloworld(request):
 def helloworld2(request):
     return render(request, 'hello.html')
 
+
+def toppage(request):
+    ctx = {
+    }
+    return render(request, 'toppage.html', ctx)
+
