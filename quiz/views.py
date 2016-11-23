@@ -41,6 +41,12 @@ def list_quizzes(request):
     return render(request, 'list_quizzes.html')
 
 
+def start_quiz(request, pk):
+    return render(request, 'start_quiz.html')
+
+
+
+
 
 
 
