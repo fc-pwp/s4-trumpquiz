@@ -9,7 +9,7 @@ from quiz.views import start_quiz
 
 
 urlpatterns = [
-    url(r'^quiz/([0-9]+)/$', start_quiz),
+    url(r'^quiz/(?P<pk>[0-9]+)/$', start_quiz),
     url(r'^$', list_quizzes),
 #    url(r'^$', toppage),
     url(r'^hello2/$', helloworld2),

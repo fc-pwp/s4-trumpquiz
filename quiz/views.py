@@ -42,7 +42,11 @@ def list_quizzes(request):
 
 
 def start_quiz(request, pk):
-    return render(request, 'start_quiz.html')
+    ctx = {
+        'quiz_pk': pk,
+        'pk_type': str(type(pk)),
+    }
+    return render(request, 'start_quiz.html', ctx)
 
 
 
