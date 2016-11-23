@@ -36,3 +36,11 @@ def toppage(request):
     }
     return render(request, 'toppage.html', ctx)
 
+
+def list_quizzes(request):
+    return render(request, 'list_quizzes.html')
+
+
+
+
+
