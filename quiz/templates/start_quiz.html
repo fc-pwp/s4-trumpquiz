@@ -14,8 +14,9 @@
         </div>
 
         <form method="POST" action="">
+            {% csrf_token %}
             <p>당신의 이름은 무엇인가요?</p>
-            <input type="text" name="username" />
+            {{ form.as_p }}
             <button type="submit">퀴즈 시작!</button>
         </form>
 
