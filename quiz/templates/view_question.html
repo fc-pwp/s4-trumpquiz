@@ -20,9 +20,10 @@
                 <p>선택을 올바르게 하세요</p>
             {% endif %}
             <ul>
-                <li><input type="radio" name="answer" value="1" /> 커피</li>
-                <li><input type="radio" name="answer" value="2" /> 홍차</li>
-                <li><input type="radio" name="answer" value="3" /> 물</li>
+                {% for answer in answers %}
+                <li><input type="radio" name="answer" value="{{ answer.sequence }}" />
+                    {{ answer.content }}</li>
+                {% endfor %}
             </ul>
 
             <button type="submit">다음 문제로</button>

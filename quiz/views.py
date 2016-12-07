@@ -8,6 +8,7 @@ from quiz.forms import AnswerForm
 
 from .models import Quiz
 from .models import Question
+from .models import Answer
 
 
 def helloworld(request):
@@ -111,6 +112,8 @@ def view_question(request, quiz_pk, question_seq):
     # question = Question.objects.get(sequence=question_seq, quiz=quiz)
     question = get_object_or_404(Question, sequence=question_seq, quiz=quiz)
 
+    answers = Answer.objects.filter(question=question).order_by('sequence')
+
     if request.method == 'GET':
         form = AnswerForm()
     elif request.method == 'POST':
@@ -125,6 +128,7 @@ def view_question(request, quiz_pk, question_seq):
     ctx = {
         'form': form,
         'question': question,
+        'answers': answers,
     }
     return render(request, 'view_question.html', ctx)
 
