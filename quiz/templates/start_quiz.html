@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>1번 퀴즈 시작!</title>
+        <title>{{ quiz.title }} 시작!</title>
         <meta charset="utf-8" />
     </head>
 
     <body>
-        <h1>1번 퀴즈의 제목</h1>
+        <h1>{{ quiz.title }}</h1>
 
+        {% if quiz.image %}
         <div>
-            <img src="http://images.freeimages.com/images/previews/3e2/weather-vane-1424027.jpg" alt="1번 퀴즈의 대표 이미지" />
-            <p>1번 퀴즈는 재밌는 내용을 담고 있으니 꼭 풀어보세요.</p>
+            <img src="{{ quiz.image.url }}" alt="{{ quiz.title }} 이미지" />
         </div>
+        {% endif %}
 
         <form method="POST" action="">
             {% csrf_token %}

@@ -1,17 +1,18 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>1번 퀴즈의 1번 문제</title>
+        <title>{{ question.quiz.title }}의 {{ question.title }}</title>
         <meta charset="utf-8" />
     </head>
 
     <body>
-        <h1>1번 문제 제목</h1>
+        <h1>{{ question.title }}</h1>
 
+        {% if question.image %}
         <div>
-            <img src="http://images.freeimages.com/images/previews/3e2/weather-vane-1424027.jpg" alt="1번 문제의 대표 이미지" />
-            <p>1번 문제 내용입니다. 당신이 좋아하는 것은?</p>
+            <img src="{{ question.image.url }}" alt="{{ question.title }} 이미지" />
         </div>
+        {% endif %}
 
         <form method="POST" action="">
             {% csrf_token %}

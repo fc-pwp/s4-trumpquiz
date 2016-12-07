@@ -10,12 +10,15 @@
 
         <p>현재 페이지 : {{ page }}</p>
 
+        {% for quiz in quizzes %}
         <div>
             <a href="/quiz/1/">
-                <img src="http://images.freeimages.com/images/previews/3e2/weather-vane-1424027.jpg" alt="1번 퀴즈의 대표 이미지" />
+                {% if quiz.image %}
+                <img src="{{ quiz.image.url }}" alt="{{ quiz.title }} 이미지" />
+                {% endif %}
+                <h3>{{ quiz.title }}</h3>
             </a>
-            <h3>1번 퀴즈의 제목</h3>
-            <p>1번 퀴즈는 재밌는 내용을 담고 있으니 꼭 풀어보세요.</p>
         </div>
+        {% endfor %}
     </body>
 </html>

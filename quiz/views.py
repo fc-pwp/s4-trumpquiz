@@ -1,9 +1,13 @@
 from django.shortcuts import render
 from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
 
 from quiz.forms import StartQuizForm
 from quiz.forms import AnswerForm
+
+from .models import Quiz
+from .models import Question
 
 
 def helloworld(request):
@@ -55,19 +59,29 @@ def list_quizzes(request):
 #    else:
 #        page = 1
 
+    per_page = 2
     page = request.GET.get('page', 1)
     try:
         page = int(page)
     except Exception:
         page = 1
 
+    start = (page - 1) * per_page
+    end = page * per_page
+
+    # contents = Quiz.objects.order_by('-created_at')
+    contents = Quiz.objects.all().order_by('-created_at')
+
     ctx = {
+        'quizzes': contents[start:end],
         'page': page * 1,
     }
     return render(request, 'list_quizzes.html', ctx)
 
 
 def start_quiz(request, pk):
+    # quiz = Quiz.objects.get(id=pk)
+    quiz = get_object_or_404(Quiz, id=pk)
 #    if http get 방식으로 접속하면?
 #        퀴즈 시작 화면 출력
 #    elif http post 방식으로 접속하면?
@@ -85,11 +99,18 @@ def start_quiz(request, pk):
 
     ctx = {
         'form': form,
+        'quiz': quiz,
     }
     return render(request, 'start_quiz.html', ctx)
 
 
 def view_question(request, quiz_pk, question_seq):
+    # quiz = Quiz.objects.get(id=quiz_pk)
+    quiz = get_object_or_404(Quiz, id=quiz_pk)
+    question_seq = int(question_seq)
+    # question = Question.objects.get(sequence=question_seq, quiz=quiz)
+    question = get_object_or_404(Question, sequence=question_seq, quiz=quiz)
+
     if request.method == 'GET':
         form = AnswerForm()
     elif request.method == 'POST':
@@ -103,6 +124,7 @@ def view_question(request, quiz_pk, question_seq):
 
     ctx = {
         'form': form,
+        'question': question,
     }
     return render(request, 'view_question.html', ctx)
 
