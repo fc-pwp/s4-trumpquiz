@@ -1,7 +1,9 @@
 from django.shortcuts import render
+from django.shortcuts import redirect
 from django.http import HttpResponse
 
 from quiz.forms import StartQuizForm
+from quiz.forms import AnswerForm
 
 
 def helloworld(request):
@@ -77,7 +79,9 @@ def start_quiz(request, pk):
         form = StartQuizForm(data=request.POST)
 
         if form.is_valid():
-            raise Exception('잘 된 상황이지만 임시로 오류 처리')
+            #raise Exception('잘 된 상황이지만 임시로 오류 처리')
+            #return redirect('/quiz/1/question/1/')
+            return redirect('view_question', quiz_pk=1, question_seq=1)
 
     ctx = {
         'form': form,
@@ -86,7 +90,20 @@ def start_quiz(request, pk):
 
 
 def view_question(request, quiz_pk, question_seq):
-    ctx = {}
+    if request.method == 'GET':
+        form = AnswerForm()
+    elif request.method == 'POST':
+        form = AnswerForm(request.POST)
+
+        if form.is_valid():
+            question_seq = int(question_seq) + 1
+            return redirect('view_question',
+                            quiz_pk=quiz_pk,
+                            question_seq=question_seq)
+
+    ctx = {
+        'form': form,
+    }
     return render(request, 'view_question.html', ctx)
 
 
