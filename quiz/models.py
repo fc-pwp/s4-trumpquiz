@@ -8,7 +8,7 @@ class Quiz(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return '{}'.format(self.pk)
+        return '{}: {}'.format(self.pk, self.title)
 
 
 class Question(models.Model):
