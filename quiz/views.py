@@ -2,6 +2,7 @@ from django.shortcuts import render
 from django.shortcuts import redirect
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django.urls import reverse
 
 from quiz.forms import StartQuizForm
 from quiz.forms import AnswerForm
@@ -9,6 +10,7 @@ from quiz.forms import AnswerForm
 from .models import Quiz
 from .models import Question
 from .models import Answer
+from .models import UserScore
 
 
 def helloworld(request):
@@ -47,6 +49,10 @@ def toppage(request):
 
 
 def list_quizzes(request):
+    print('-' * 40)
+    if not request.session.session_key:
+        request.session.save()
+    print(request.session.session_key)
 #    if 'page' in request.GET:
 #        page = request.GET['page']
 #    else:
@@ -112,25 +118,57 @@ def view_question(request, quiz_pk, question_seq):
     # question = Question.objects.get(sequence=question_seq, quiz=quiz)
     question = get_object_or_404(Question, sequence=question_seq, quiz=quiz)
 
+    has_next = Question.objects \
+            .filter(quiz=quiz, sequence=question_seq+1).exists()
+
     answers = Answer.objects.filter(question=question).order_by('sequence')
 
     if request.method == 'GET':
         form = AnswerForm()
+        previous_value = request.GET.get('previous', '')
+        if previous_value.isdigit():
+            previous_obj = UserScore.objects.get(pk=previous_value)
+            previous = previous_obj.pk
+        else:
+            previous = None
     elif request.method == 'POST':
         form = AnswerForm(request.POST)
 
         if form.is_valid():
+            score = UserScore()
+            score.session_key = request.session.session_key
+
+            answer_seq = form.cleaned_data.get('answer')
+            answer = Answer.objects \
+                        .get(question=question, sequence=answer_seq)
+            score.answer = answer
+            score.quiz = quiz
+
+            previous_value = form.cleaned_data.get('previous')
+            if not previous_value:
+                score.previous = previous_value
+
+            score.save()
+
             question_seq = int(question_seq) + 1
-            return redirect('view_question',
-                            quiz_pk=quiz_pk,
-                            question_seq=question_seq)
+
+            url = reverse('view_question',
+                          kwargs={
+                              'quiz_pk': quiz_pk,
+                              'question_seq': question_seq,
+                          })
+            #redirect('view_question', quiz_pk=quiz_pk, question_seq=question_seq)
+            return redirect('{}?previous={}'.format(url, score.pk))
 
     ctx = {
         'form': form,
         'question': question,
         'answers': answers,
+        'has_next': has_next,
+        'previous': previous,
     }
     return render(request, 'view_question.html', ctx)
+
 
 
 

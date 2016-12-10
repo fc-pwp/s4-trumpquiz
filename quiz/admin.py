@@ -2,6 +2,8 @@ from django.contrib import admin
 
 from .models import Quiz
 from .models import Question
+from .models import Answer
+from .models import Result
 
 
 class QuizAdmin(admin.ModelAdmin):
@@ -19,4 +21,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_filter = ['quiz']
 
 admin.site.register(Question, QuestionAdmin)
+
+admin.site.register(Answer)
+admin.site.register(Result)
 

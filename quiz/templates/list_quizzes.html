@@ -21,7 +21,7 @@
 
         {% for quiz in quizzes %}
         <div>
-            <a href="/quiz/1/">
+            <a href="/quiz/{{ quiz.pk }}/">
                 {% if quiz.image %}
                 <img src="{{ quiz.image.url }}" alt="{{ quiz.title }} 이미지" />
                 {% endif %}

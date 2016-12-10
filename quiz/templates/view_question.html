@@ -16,6 +16,11 @@
 
         <form method="POST" action="">
             {% csrf_token %}
+
+            {% if previous %}
+            <input type="hidden" name="previous" value="{{ previous }}" />
+            {% endif %}
+
             {% if form.errors %}
                 <p>선택을 올바르게 하세요</p>
             {% endif %}
@@ -26,7 +31,13 @@
                 {% endfor %}
             </ul>
 
-            <button type="submit">다음 문제로</button>
+            <button type="submit">
+                {% if has_next %}
+                다음 문제로
+                {% else %}
+                결과 보기
+                {% endif %}
+            </button>
         </form>
 
     </body>

@@ -36,7 +36,6 @@ class Answer(models.Model):
         return '{}'.format(self.pk)
 
 
-
 class Result(models.Model):
     quiz = models.ForeignKey(Quiz)
     content = models.TextField()
@@ -47,6 +46,14 @@ class Result(models.Model):
 
     def __str__(self):
         return '{}'.format(self.pk)
+
+
+class UserScore(models.Model):
+    session_key = models.CharField(max_length=32)
+    previous = models.OneToOneField('self', null=True)
+    quiz = models.ForeignKey(Quiz)
+    answer = models.ForeignKey(Answer)
+    created_at = models.DateTimeField(auto_now_add=True)
 
 
 

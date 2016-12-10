@@ -7,5 +7,6 @@ class StartQuizForm(forms.Form):
 
 
 class AnswerForm(forms.Form):
-    answer = forms.CharField()
+    answer = forms.IntegerField()
+    previous = forms.IntegerField(required=False)
 
