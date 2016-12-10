@@ -11,6 +11,7 @@ from .models import Quiz
 from .models import Question
 from .models import Answer
 from .models import UserScore
+from .models import Result
 
 
 def helloworld(request):
@@ -152,13 +153,18 @@ def view_question(request, quiz_pk, question_seq):
 
             question_seq = int(question_seq) + 1
 
-            url = reverse('view_question',
-                          kwargs={
-                              'quiz_pk': quiz_pk,
-                              'question_seq': question_seq,
-                          })
-            #redirect('view_question', quiz_pk=quiz_pk, question_seq=question_seq)
-            return redirect('{}?previous={}'.format(url, score.pk))
+            if has_next:
+                url = reverse('view_question',
+                              kwargs={
+                                  'quiz_pk': quiz_pk,
+                                  'question_seq': question_seq,
+                              })
+                #redirect('view_question', quiz_pk=quiz_pk, question_seq=question_seq)
+                return redirect('{}?previous={}'.format(url, score.pk))
+            else:
+                url = reverse('result', kwargs={'quiz_pk': quiz_pk})
+                return redirect('{}?previous={}'.format(url, score.pk))
+                #return redirect('result', quiz_pk=quiz_pk)
 
     ctx = {
         'form': form,
@@ -170,6 +176,38 @@ def view_question(request, quiz_pk, question_seq):
     return render(request, 'view_question.html', ctx)
 
 
+def result(request, quiz_pk):
+    quiz = get_object_or_404(Quiz, id=quiz_pk)
+    previous_value = request.GET.get('previous', '')
+    if previous_value.isdigit():
+        score = UserScore.objects.get(pk=int(previous_value))
+    else:
+        score = UserScore.objects \
+                       .filter(session_key=request.session.session_key,
+                               quiz=quiz).order_by('-id').first()
+
+    answers = {}
+    answers[score.answer.code] = 1
+
+    while True:
+        if not score.previous:
+            break
+
+        score = UserScore.objects.get(id=score.previous.pk)
+
+        if score.answer.code in answers:
+            answers[score.answer.code] += 1
+        else:
+            answers[score.answer.code] = 1
+
+    result_code = sorted(answers, key=answers.get, reverse=True)
+    result = Result.objects.get(quiz=quiz, code=result_code[0])
+
+    ctx = {
+        'result': result,
+    }
+
+    return render(request, 'result.html', ctx)
 
 
 
